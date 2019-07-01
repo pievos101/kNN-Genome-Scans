@@ -37,6 +37,7 @@ pairFST  <- t(slide@nuc.F_ST.pairwise)
 #### KNN-based methods ################################
 pairFST <- round(pairFST, digits=5)
 pairFST[pairFST<0] <- 0
+pairFST[is.na(pairFST)] <- 0
 
 #Write output 
 write.table(pairFST, file="ELKI-IN", col.names=FALSE, row.names=FALSE)
