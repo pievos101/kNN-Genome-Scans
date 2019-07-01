@@ -1,5 +1,5 @@
 
-kNN_calc_best_k <- function(tau, thres=0.95){
+kNN_calc_best_k <- function(tau, thres=0.90){
 
 RUNS <- vector("list", length(tau))
 r    <- 1
