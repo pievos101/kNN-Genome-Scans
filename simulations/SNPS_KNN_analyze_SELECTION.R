@@ -1,12 +1,15 @@
 library(PopGenome)
 #library(DDoutlier)
-library(pROC)
 #library(Rlof)
 library(pcadapt) 
 library(BlockFeST)
-source("../convertTolfmm.R")
-source("../R-Elki-Read-Out.R")
-source("../R-Elki-Call.R")
+source("~/GitHub/kNN-Genome-Scans/simulations/convertTolfmm.R")
+source("~/GitHub/kNN-Genome-Scans/simulations/R-Elki-Read-Out.R")
+source("~/GitHub/kNN-Genome-Scans/simulations/R-Elki-Call.R")
+source("~/GitHub/kNN-Genome-Scans/kNN_calc_best_k.R")
+source("~/GitHub/kNN-Genome-Scans/kNN_tau_window.R")
+source("~/GitHub/kNN-Genome-Scans/kNNCallElkiALL.R")
+library(pROC)
 
 
 neut <- readMS("KNN_neut")
@@ -118,11 +121,6 @@ col=c("black","grey","green","orange","purple","yellow","dark green","red"),
 lwd=c(1,1,1,1,1,1,1,1))
 
 ## Calculate the AUCs for kNN
-
-source("~/GitHub/kNN-Genome-Scans/kNN_calc_best_k.R")
-source("~/GitHub/kNN-Genome-Scans/kNN_tau_window.R")
-source("~/GitHub/kNN-Genome-Scans/kNNCallElkiALL.R")
-
 # calculate tau windows 
 tau_lof   <- kNN_tau_window("LOFELKI-IN")
 tau_knn   <- kNN_tau_window("KNNELKI-IN")
