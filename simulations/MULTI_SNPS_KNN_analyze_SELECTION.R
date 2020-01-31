@@ -4,6 +4,8 @@ library(PopGenome)
 library(pcadapt) 
 library(BlockFeST)
 library(pROC)
+library(PRROC)
+
 source("~/GitHub/kNN-Genome-Scans/simulations/convertTolfmm.R")
 source("~/GitHub/kNN-Genome-Scans/simulations/R-Elki-Read-Out.R")
 source("~/GitHub/kNN-Genome-Scans/simulations/R-Elki-Call.R")
@@ -22,7 +24,7 @@ FST  <- as.vector(data@nucleotide.F_ST)
 #FST[FST<=0] <- 0
 #AUC of FST
 pred <- numeric(1000)
-pred[950:1000] <- 1
+pred[951:1000] <- 1
 
 nas <- which(sapply(data@region.data@biallelic.sites,length)==0)
 
@@ -34,6 +36,10 @@ FST  <- FST[-nas]
 auc_FST <- auc(pred~FST)
 auc_FST
 
+pr_FST  <- pr.curve(scores.class0 = FST[pred==1], scores.class1 = FST[pred==0], curve = T)$auc.integral
+
+pr_FST
+
 #AUC of pcadapt 
 gc()
 convert_to_lfmm2(data)
@@ -44,8 +50,16 @@ res <- pcadapt(filename, K=2, ploidy=1, min.maf = 0)
 GROUP <- sort(rep(1:1000,50))
 #GROUP <- getBayes(data, snps=TRUE)$FUNC
 P <- tapply(res$pvalue,GROUP,function(x){val<-log(x);sum(val[is.finite(val)])})
+
+P <- as.numeric(P)
+
 auc_PCADAPT <- auc(pred~P)
+
 auc_PCADAPT
+
+pr_PCADAPT  <- pr.curve(scores.class0 = abs(P)[pred==1], scores.class1 = abs(P)[pred==0], curve = T)$auc.integral
+
+pr_PCADAPT
 
 # FLK
 convert_to_ped(data)
@@ -57,6 +71,12 @@ FLK <- as.numeric(FLK)
 FLK <- FLK[-1]
 FLK <- tapply(FLK,GROUP,function(x){val<-log(x);sum(val[is.finite(val)])})
 auc_FLK <- auc(pred~FLK);auc_FLK
+
+FLK <- as.numeric(FLK)
+
+pr_FLK  <- pr.curve(scores.class0 = abs(FLK)[pred==1], scores.class1 =  abs(FLK)[pred==0], curve = T)$auc.integral
+
+pr_FLK
 
 ## BlockFeST
 #snps <- getBayes(data, snps=TRUE)
@@ -179,12 +199,26 @@ simplifiedlof_auc <- auc(pred~simplifiedlof_scores)
 ldf_auc   <- auc(pred~ldf_scores)
 
 RES        <- c(lof_auc,knn_auc,loop_auc,inflo_auc,odin_auc,knnw_auc,ldf_auc, auc_FST, auc_PCADAPT, auc_FLK)
-names(RES) <- c("lof","knn","loop","inflo","odin","knnw","ldf","FST","PCADAPT","auc_FLK")
+names(RES) <- c("lof","knn","loop","inflo","odin","knnw","ldf","FST","PCADAPT","FLK")
 
-barplot(RES)
+barplot(RES, las=2, main="AUC")
+
+# calculate PR values 
+
+lof_pr <- pr.curve(scores.class0 = lof_scores[pred==1], scores.class1 =  lof_scores[pred==0], curve = T)$auc.integral
+knn_pr <- pr.curve(scores.class0 = knn_scores[pred==1], scores.class1 =  knn_scores[pred==0], curve = T)$auc.integral
+loop_pr <- pr.curve(scores.class0 = loop_scores[pred==1], scores.class1 =  loop_scores[pred==0], curve = T)$auc.integral
+inflo_pr <- pr.curve(scores.class0 = inflo_scores[pred==1], scores.class1 =  inflo_scores[pred==0], curve = T)$auc.integral
+odin_pr <- pr.curve(scores.class0 = -odin_scores[pred==1], scores.class1 =  -odin_scores[pred==0], curve = T)$auc.integral
+knnw_pr <- pr.curve(scores.class0 = knnw_scores[pred==1], scores.class1 =  knnw_scores[pred==0], curve = T)$auc.integral
+simplifiedlof_pr <- pr.curve(scores.class0 = simplifiedlof_scores[pred==1], scores.class1 =  simplifiedlof_scores[pred==0], curve = T)$auc.integral
+ldf_pr <- pr.curve(scores.class0 = ldf_scores[pred==1], scores.class1 =  ldf_scores[pred==0], curve = T)$auc.integral
 
 
+RES        <- c(lof_pr,knn_pr,loop_pr,inflo_pr,odin_pr,knnw_pr,ldf_pr, pr_FST, pr_PCADAPT, pr_FLK)
+names(RES) <- c("lof","knn","loop","inflo","odin","knnw","ldf","FST","PCADAPT","FLK")
 
+barplot(RES, las=2, main="PR")
 
 
 
