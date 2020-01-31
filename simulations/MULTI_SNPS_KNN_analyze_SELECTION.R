@@ -3,13 +3,13 @@ library(PopGenome)
 #library(Rlof)
 library(pcadapt) 
 library(BlockFeST)
+library(pROC)
 source("~/GitHub/kNN-Genome-Scans/simulations/convertTolfmm.R")
 source("~/GitHub/kNN-Genome-Scans/simulations/R-Elki-Read-Out.R")
 source("~/GitHub/kNN-Genome-Scans/simulations/R-Elki-Call.R")
 source("~/GitHub/kNN-Genome-Scans/kNN_calc_best_k.R")
 source("~/GitHub/kNN-Genome-Scans/kNN_tau_window.R")
 source("~/GitHub/kNN-Genome-Scans/kNNCallElkiALL.R")
-library(pROC)
 
 neut <- readMS("KNN_neut")
 sel  <- readMS("KNN_sel")
@@ -42,7 +42,6 @@ filename <- read.pcadapt("LFMM-sel", type = "lfmm")
 res <- pcadapt(filename, K=2, ploidy=1, min.maf = 0)
 #create groups
 GROUP <- sort(rep(1:1000,50))
-#GROUP <- sort(rep(1:1000,1))
 #GROUP <- getBayes(data, snps=TRUE)$FUNC
 P <- tapply(res$pvalue,GROUP,function(x){val<-log(x);sum(val[is.finite(val)])})
 auc_PCADAPT <- auc(pred~P)
@@ -50,12 +49,19 @@ auc_PCADAPT
 
 # FLK
 convert_to_ped(data)
+# call hapflk
 # ./hapflk --file /home/bastian/kNN-project/REVISIONS/SINGLE-SNP_SIM/SNPS-0-7/FLK -K 1
+# read hapflk results 
 FLK <- read.table("hapflk.flk",stringsAsFactors=FALSE)[,6]
 FLK <- as.numeric(FLK)
 FLK <- FLK[-1]
 FLK <- tapply(FLK,GROUP,function(x){val<-log(x);sum(val[is.finite(val)])})
 auc_FLK <- auc(pred~FLK);auc_FLK
+
+## BlockFeST
+#snps <- getBayes(data, snps=TRUE)
+#BB   <- BlockFeST(snps, GROUP = snps$FUNC)
+
 
 #### KNN-based methods ################################
 # Get pairwise FST 
@@ -99,14 +105,6 @@ knnw  <- readElkiOUT("KNNWELKI-IN", pred)
 simplifiedlof <- readElkiOUT("SIMPLIFIEDLOFELKI-IN", pred)
 ldf   <- readElkiOUT("LDFELKI-IN", pred)
 
-# These were too slow or did not exist
-#CallElkiALL("ELKI-IN", "FASTABOD") #slow
-#fastabod   <- readElkiOUT("FASTABODELKI-IN")
-#CallElkiALL("ELKI-IN", "LDOF") #slow
-#ldof   <- readElkiOUT("LDOFELKI-IN")
-#CallElkiALL("ELKI-IN", "COF") #not in the old elki + slow
-#cof <- readElkiOUT("COFELKI-IN")
-
 ##plot the results
 plot(lof,col="black", type="b", pch=1, ylim=c(0,1),xaxt="n", xlab="k", ylab="AUC")
 lines(knn, col="grey", type="b", pch=2)
@@ -127,7 +125,6 @@ legend("bottomleft",c("lof","knn","loop","inflo","odin","knnw","simplifiedlof","
 pch = c(1,2,3,5,6,7,8,9), 
 col=c("black","grey","green","orange","purple","yellow","dark green","red"), 
 lwd=c(1,1,1,1,1,1,1,1))
-
 
 ## Calculate the AUCs for kNN
 
@@ -201,29 +198,3 @@ barplot(RES)
 
 
 
-
-
-
-
-
-
-#### KNN based methods R package 
-#ITER <- seq(2,990,by=10)
-
-##RLOF 
-#X_LOF <- numeric(length(ITER))
-#for(xx in 1:length(ITER)){
-# cat(xx,"of",length(ITER),"\n",sep=" ")
-# LOF       <- lof(pairFST, k=ITER[xx])
-# auc       <- auc(pred~LOF)[1]
-# X_LOF[xx]  <- auc
-#}
-
-##INFLO 
-#X_INFLO <- numeric(length(ITER))
-#for(xx in 1:length(ITER)){
-# cat(xx,"of",length(ITER),"\n",sep=" ")
-# INFLO      <- INFLO(pairFST, k=ITER[xx])
-# auc        <- auc(pred~INFLO)[1]
-# X_INFLO[xx] <- auc
-#}

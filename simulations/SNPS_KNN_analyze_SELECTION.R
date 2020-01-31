@@ -91,14 +91,6 @@ knnw  <- readElkiOUT("KNNWELKI-IN", pred)
 simplifiedlof <- readElkiOUT("SIMPLIFIEDLOFELKI-IN", pred)
 ldf   <- readElkiOUT("LDFELKI-IN", pred)
 
-# These were too slow or did not exist
-#CallElkiALL("ELKI-IN", "FASTABOD") #slow
-#fastabod   <- readElkiOUT("FASTABODELKI-IN")
-#CallElkiALL("ELKI-IN", "LDOF") #slow
-#ldof   <- readElkiOUT("LDOFELKI-IN")
-#CallElkiALL("ELKI-IN", "COF") #not in the old elki + slow
-#cof <- readElkiOUT("COFELKI-IN")
-
 ##plot the results
 plot(lof,col="black", type="b", pch=1, ylim=c(0,1),xaxt="n", xlab="k", ylab="AUC")
 lines(knn, col="grey", type="b", pch=2)
@@ -193,35 +185,3 @@ barplot(RES)
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-#### KNN based methods R package 
-#ITER <- seq(2,990,by=10)
-
-##RLOF 
-#X_LOF <- numeric(length(ITER))
-#for(xx in 1:length(ITER)){
-# cat(xx,"of",length(ITER),"\n",sep=" ")
-# LOF       <- lof(pairFST, k=ITER[xx])
-# auc       <- auc(pred~LOF)[1]
-# X_LOF[xx]  <- auc
-#}
-
-##INFLO 
-#X_INFLO <- numeric(length(ITER))
-#for(xx in 1:length(ITER)){
-# cat(xx,"of",length(ITER),"\n",sep=" ")
-# INFLO      <- INFLO(pairFST, k=ITER[xx])
-# auc        <- auc(pred~INFLO)[1]
-# X_INFLO[xx] <- auc
-#}
