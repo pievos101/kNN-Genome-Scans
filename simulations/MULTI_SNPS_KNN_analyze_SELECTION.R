@@ -218,7 +218,7 @@ ldf_pr <- pr.curve(scores.class0 = ldf_scores[pred==1], scores.class1 =  ldf_sco
 RES        <- c(lof_pr,knn_pr,loop_pr,inflo_pr,odin_pr,knnw_pr,ldf_pr, pr_FST, pr_PCADAPT, pr_FLK)
 names(RES) <- c("lof","knn","loop","inflo","odin","knnw","ldf","FST","PCADAPT","FLK")
 
-barplot(RES, las=2, main="PR")
+barplot(RES, las=2, main="PRAUC")
 
 
 
