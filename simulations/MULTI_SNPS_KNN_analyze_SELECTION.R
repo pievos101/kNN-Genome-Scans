@@ -66,8 +66,8 @@ convert_to_ped(data)
 # call hapflk
 # ./hapflk --file /home/bastian/kNN-project/REVISIONS/SINGLE-SNP_SIM/SNPS-0-7/FLK -K 1
 # read hapflk results 
-FLK <- read.table("hapflk.flk",stringsAsFactors=FALSE)[,6]
-FLK <- as.numeric(FLK)
+FLKx <- read.table("hapflk.flk",stringsAsFactors=FALSE)[,6]
+FLK <- as.numeric(FLKx)
 FLK <- FLK[-1]
 FLK <- tapply(FLK,GROUP,function(x){val<-log(x);sum(val[is.finite(val)])})
 auc_FLK <- auc(pred~FLK);auc_FLK
