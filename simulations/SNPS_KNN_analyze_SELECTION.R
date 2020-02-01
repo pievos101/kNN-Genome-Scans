@@ -48,13 +48,13 @@ convert_to_lfmm2(data)
 filename <- read.pcadapt("LFMM-sel", type = "lfmm")
 res <- pcadapt(filename, K=2, ploidy=1, min.maf = 0)
 
-P <- log(as.numeric(res$pvalue))
+P <- as.numeric(res$pvalue)
 
 auc_PCADAPT <- auc(pred~P)
 
 auc_PCADAPT
 
-pr_PCADAPT  <- pr.curve(scores.class0 = abs(P)[pred==1], scores.class1 = abs(P)[pred==0], curve = T)$auc.integral
+pr_PCADAPT  <- pr.curve(scores.class0 = (-P)[pred==1], scores.class1 = (-P)[pred==0], curve = T)$auc.integral
 
 pr_PCADAPT
 
@@ -70,9 +70,9 @@ FLK <- FLK[-1]
 #FLK <- tapply(FLK,GROUP,function(x){val<-log(x);sum(val[is.finite(val)])})
 auc_FLK <- auc(pred~FLK);auc_FLK
 
-FLK <- log(as.numeric(FLK))
+FLK <- as.numeric(FLK)
 
-pr_FLK  <- pr.curve(scores.class0 = abs(FLK)[pred==1], scores.class1 =  abs(FLK)[pred==0], curve = T)$auc.integral
+pr_FLK  <- pr.curve(scores.class0 = (-FLK)[pred==1], scores.class1 =  (-FLK)[pred==0], curve = T)$auc.integral
 
 pr_FLK
 
@@ -194,8 +194,10 @@ knnw_auc  <- auc(pred~knnw_scores)
 simplifiedlof_auc <- auc(pred~simplifiedlof_scores)
 ldf_auc   <- auc(pred~ldf_scores)
 
-RES        <- c(lof_auc,knn_auc,loop_auc,inflo_auc,odin_auc,knnw_auc,ldf_auc, auc_FST, auc_PCADAPT)
-names(RES) <- c("lof","knn","loop","inflo","odin","knnw","ldf","FST","PCADAPT")
+# AUC values 
+
+RES        <- c(lof_auc,knn_auc,loop_auc,inflo_auc,odin_auc,knnw_auc,ldf_auc, auc_FST, auc_PCADAPT, auc_FLK)
+names(RES) <- c("lof","knn","loop","inflo","odin","knnw","ldf","FST","PCADAPT","FLK")
 
 barplot(RES, las=2, main="AUC")
 
