@@ -64,15 +64,15 @@ convert_to_ped(data)
 # call hapflk
 # ./hapflk --file /home/bastian/kNN-project/REVISIONS/SINGLE-SNP_SIM/SNPS-0-7/FLK -K 1
 # read hapflk results 
-FLKx <- read.table("hapflk.flk",stringsAsFactors=FALSE)[,6]
+# We read in the FLK values because many p-values were NaN
+FLKx <- read.table("hapflk.flk",stringsAsFactors=FALSE)[,5]
 FLK <- as.numeric(FLKx)
 FLK <- FLK[-1]
-#FLK <- tapply(FLK,GROUP,function(x){val<-log(x);sum(val[is.finite(val)])})
 auc_FLK <- auc(pred~FLK);auc_FLK
 
 FLK <- as.numeric(FLK)
 
-pr_FLK  <- pr.curve(scores.class0 = (-FLK)[pred==1], scores.class1 =  (-FLK)[pred==0], curve = T)$auc.integral
+pr_FLK  <- pr.curve(scores.class0 = (FLK)[pred==1], scores.class1 =  (FLK)[pred==0], curve = T)$auc.integral
 
 pr_FLK
 
@@ -142,6 +142,8 @@ legend("bottomleft",c("lof","knn","loop","inflo","odin","knnw","simplifiedlof","
 pch = c(1,2,3,5,6,7,8,9), 
 col=c("black","grey","green","orange","purple","yellow","dark green","red"), 
 lwd=c(1,1,1,1,1,1,1,1))
+
+
 
 ## Calculate the AUCs for kNN
 # calculate tau windows 
