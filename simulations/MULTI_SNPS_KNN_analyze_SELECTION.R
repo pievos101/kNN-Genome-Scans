@@ -82,6 +82,7 @@ pr_FLK
 #snps <- getBayes(data, snps=TRUE)
 #BB   <- BlockFeST(snps, GROUP = snps$FUNC)
 
+#load("BlockFeST.RD")
 
 #### KNN-based methods ################################
 # Get pairwise FST 
@@ -189,6 +190,7 @@ knnw_scores <- readElki(paste("KNNWELKI-IN/Elki_k",k_knnw,sep=""))
 simplifiedlof_scores <- readElki(paste("SIMPLIFIEDLOFELKI-IN/Elki_k",k_simplifiedlof,sep=""))
 ldf_scores <- readElki(paste("LDFELKI-IN/Elki_k",k_ldf,sep=""))
 
+# calculate AUC scores
 lof_auc   <- auc(pred~lof_scores)
 knn_auc   <- auc(pred~knn_scores)
 loop_auc  <- auc(pred~loop_scores)
@@ -198,10 +200,10 @@ knnw_auc  <- auc(pred~knnw_scores)
 simplifiedlof_auc <- auc(pred~simplifiedlof_scores)
 ldf_auc   <- auc(pred~ldf_scores)
 
-RES        <- c(lof_auc,knn_auc,loop_auc,inflo_auc,odin_auc,knnw_auc,ldf_auc, auc_FST, auc_PCADAPT, auc_FLK)
-names(RES) <- c("lof","knn","loop","inflo","odin","knnw","ldf","FST","PCADAPT","FLK")
+RES_AUC        <- c(lof_auc,knn_auc,loop_auc,inflo_auc,odin_auc,knnw_auc,ldf_auc, auc_FST, auc_PCADAPT, auc_FLK, auc_BlockFeST)
+names(RES_AUC) <- c("lof","knn","loop","inflo","odin","knnw","ldf","FST","PCADAPT","FLK","BlockFeST")
 
-barplot(RES, las=2, main="AUC")
+barplot(RES_AUC, las=2, main="AUC")
 
 # calculate PR values 
 
@@ -215,10 +217,14 @@ simplifiedlof_pr <- pr.curve(scores.class0 = simplifiedlof_scores[pred==1], scor
 ldf_pr <- pr.curve(scores.class0 = ldf_scores[pred==1], scores.class1 =  ldf_scores[pred==0], curve = T)$auc.integral
 
 
-RES        <- c(lof_pr,knn_pr,loop_pr,inflo_pr,odin_pr,knnw_pr,ldf_pr, pr_FST, pr_PCADAPT, pr_FLK)
-names(RES) <- c("lof","knn","loop","inflo","odin","knnw","ldf","FST","PCADAPT","FLK")
+RES_PR        <- c(lof_pr,knn_pr,loop_pr,inflo_pr,odin_pr,knnw_pr,ldf_pr, pr_FST, pr_PCADAPT, pr_FLK, pr_BlockFeST)
+names(RES_PR) <- c("lof","knn","loop","inflo","odin","knnw","ldf","FST","PCADAPT","FLK","BlockFeST")
 
-barplot(RES, las=2, main="PRAUC")
+barplot(RES_PR, las=2, main="PR-AUC")
+
+
+write.table(RES_PR, file="ALL-RESULTS-AUC.txt")
+write.table(RES_PR, file="ALL-RESULTS-PR.txt")
 
 
 
