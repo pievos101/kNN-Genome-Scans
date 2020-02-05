@@ -136,16 +136,23 @@ lines(odin, col="purple", type="b", pch=6)
 lines(knnw, col="yellow", type="b", pch=7)
 lines(simplifiedlof, col="dark green", type="b", pch=8)
 lines(ldf, col="red", type="b", pch=9)
-abline(h=auc_FST)
-abline(h=auc_PCADAPT)
-abline(h=auc_FLK)
+abline(h=auc_FST, lty=1)
+abline(h=auc_PCADAPT, lty=2)
+abline(h=auc_FLK, lty=3)
+abline(h=auc_BlockFeST, lty=4)
 breaks <- c(1,10,20,30,40,50,60,70,80,90,99)
 axis(1,breaks,as.character(breaks*10))
 #legend
 legend("bottomleft",c("lof","knn","loop","inflo","odin","knnw","simplifiedlof","ldf"),
 pch = c(1,2,3,5,6,7,8,9), 
 col=c("black","grey","green","orange","purple","yellow","dark green","red"), 
-lwd=c(1,1,1,1,1,1,1,1))
+lwd=c(1,1,1,1,1,1,1,1), lty=rep(1,8), bty = "n")
+
+legend("bottomright",c("FST","pcadapt","FLK","BlockFeST"),
+pch = c(NA,NA,NA,NA), 
+col=c(rep("black",4)), 
+lwd=c(1,1,1,1), lty=c(1,2,3,4), bty = "n")
+
 
 ## Calculate the AUCs for kNN
 
@@ -200,10 +207,7 @@ knnw_auc  <- auc(pred~knnw_scores)
 simplifiedlof_auc <- auc(pred~simplifiedlof_scores)
 ldf_auc   <- auc(pred~ldf_scores)
 
-RES_AUC        <- c(lof_auc,knn_auc,loop_auc,inflo_auc,odin_auc,knnw_auc,ldf_auc, auc_FST, auc_PCADAPT, auc_FLK, auc_BlockFeST)
-names(RES_AUC) <- c("lof","knn","loop","inflo","odin","knnw","ldf","FST","PCADAPT","FLK","BlockFeST")
 
-barplot(RES_AUC, las=2, main="AUC")
 
 # calculate PR values 
 
@@ -217,14 +221,19 @@ simplifiedlof_pr <- pr.curve(scores.class0 = simplifiedlof_scores[pred==1], scor
 ldf_pr <- pr.curve(scores.class0 = ldf_scores[pred==1], scores.class1 =  ldf_scores[pred==0], curve = T)$auc.integral
 
 
-RES_PR        <- c(lof_pr,knn_pr,loop_pr,inflo_pr,odin_pr,knnw_pr,ldf_pr, pr_FST, pr_PCADAPT, pr_FLK, pr_BlockFeST)
-names(RES_PR) <- c("lof","knn","loop","inflo","odin","knnw","ldf","FST","PCADAPT","FLK","BlockFeST")
+RES_AUC        <- c(simplifiedlof_auc,lof_auc,knn_auc,loop_auc,inflo_auc,odin_auc,knnw_auc,ldf_auc, auc_FST, auc_PCADAPT, auc_FLK, auc_BlockFeST)
+names(RES_AUC) <- c("simplifiedlof","lof","knn","loop","inflo","odin","knnw","ldf","FST","PCADAPT","FLK","BlockFeST")
 
-barplot(RES_PR, las=2, main="PR-AUC")
+#barplot(RES_AUC, las=2, main="AUC")
+
+RES_PR        <- c(simplifiedlof_pr,lof_pr,knn_pr,loop_pr,inflo_pr,odin_pr,knnw_pr,ldf_pr, pr_FST, pr_PCADAPT, pr_FLK, pr_BlockFeST)
+names(RES_PR) <- c("simplifiedlof","lof","knn","loop","inflo","odin","knnw","ldf","FST","PCADAPT","FLK","BlockFeST")
+
+#barplot(RES_PR, las=2, main="PR-AUC")
 
 
-write.table(RES_PR, file="ALL-RESULTS-AUC.txt")
-write.table(RES_PR, file="ALL-RESULTS-PR.txt")
+write.table(RES_AUC, file="AUC.txt")
+write.table(RES_PR, file="PR-AUC.txt")
 
 
 
