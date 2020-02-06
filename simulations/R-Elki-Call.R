@@ -33,13 +33,13 @@ system(string)
 
 ### CALL ALL <------------------------------------------------------------------- ####################################################################################################################
 
-CallElkiALL <- function(ElkiIN, methods, max.k=990){
+CallElkiALL <- function(ElkiIN, methods, kvec=seq(10,990,by=10)){
 
 if(is.element("ALL", methods)){
 methods <- c("LOF","KNN","LOOP","FASTABOD","LDOF","INFLO","COF","ODIN","KNNW","SIMPLIFIEDLOF","LDF")
 }
 
-k      <- seq(10,max.k,by=10)
+k <- kvec
 
 #LOF
 LOFtime <-system.time(

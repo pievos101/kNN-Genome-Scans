@@ -118,11 +118,11 @@ return(res)
 
 }
 
-readElkiOUT <- function(folder, pred){
+readElkiOUT <- function(folder, pred, kvec=seq(10,990,by=10)){
 
 require(pROC)
 
-k <- seq(10,length(pred)-10,by=10)
+k <- kvec
 
 #selection
 #sel.ids <- 950:1000
@@ -137,7 +137,7 @@ k <- seq(10,length(pred)-10,by=10)
 ROCvalues <- rep(NaN,length(k))
 #vec       <- numeric(1000)
 #vec[sel.ids] <- 1
-vec <- pred
+#vec <- pred
 
 count <- 1
 for (xx in k){
@@ -151,7 +151,7 @@ tt <- sapply(tt,function(x){return(x[2])})
 tt <- as.numeric(tt)
 #tt <- tapply(tt,group,sum)
 #print(tt)
-ROCvalues[count] <- auc(vec,tt)[1]
+ROCvalues[count] <- auc(pred,tt)[1]
 count <- count + 1
 }
 
