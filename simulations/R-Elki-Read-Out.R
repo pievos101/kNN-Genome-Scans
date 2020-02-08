@@ -151,6 +151,13 @@ tt <- sapply(tt,function(x){return(x[2])})
 tt <- as.numeric(tt)
 #tt <- tapply(tt,group,sum)
 #print(tt)
+# check if Nas or Infs are present
+ids_na  <- which(is.na(tt))
+ids_inf <- which(!is.finite(tt))
+repl    <- unique(c(ids_na,ids_inf))  
+if(length(repl)>0){tt[repl] <- 0}
+#
+
 ROCvalues[count] <- auc(pred,tt)[1]
 count <- count + 1
 }

@@ -18,6 +18,15 @@ kNN_tau_window <- function(folder){
         cat(length(m1),length(m2),length(m3), "-",KKK[xx],"\n")
 
 	MAT <- cbind(m1,m2,m3)
+
+        # check if Nas or Infs are present
+        ids_na  <- which(is.na(MAT))
+        ids_inf <- which(!is.finite(MAT))
+
+        repl <- unique(c(ids_na,ids_inf))  
+        if(length(repl)>0){MAT[repl] <- 0}
+	#
+
 	#calculate pairwise Tau
 	pairs <- combn(3,2)
 	res   <- apply(pairs,2,function(x){cor(MAT[,x[1]],MAT[,x[2]], method="kendall")})
@@ -35,6 +44,12 @@ tt <- as.character(read.table(paste(folder,"/cluster.txt",sep=""))[,5]) #5#3
 tt <- strsplit(tt,'=')
 tt <- sapply(tt,function(x){return(x[2])})
 tt <- as.numeric(tt)
+# check if Nas or Infs are present
+ids_na  <- which(is.na(tt))
+ids_inf <- which(!is.finite(tt))
+repl    <- unique(c(ids_na,ids_inf))  
+if(length(repl)>0){tt[repl] <- 0}
+#
 return(tt)
 
 }
