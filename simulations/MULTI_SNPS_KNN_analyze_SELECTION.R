@@ -42,7 +42,7 @@ pr_FST
 
 #AUC of pcadapt 
 gc()
-convert_to_lfmm2(data)
+#convert_to_lfmm2(data)
 # new pcadapt works 
 filename <- read.pcadapt("LFMM-sel", type = "lfmm")
 res <- pcadapt(filename, K=2, ploidy=1, min.maf = 0)
@@ -62,7 +62,7 @@ pr_PCADAPT  <- pr.curve(scores.class0 = abs(P)[pred==1], scores.class1 = abs(P)[
 pr_PCADAPT
 
 # FLK
-convert_to_ped(data)
+#convert_to_ped(data)
 # call hapflk
 # ./hapflk --file /home/bastian/kNN-project/REVISIONS/SINGLE-SNP_SIM/SNPS-0-7/FLK -K 1
 # read hapflk results 
@@ -82,7 +82,15 @@ pr_FLK
 #snps <- getBayes(data, snps=TRUE)
 #BB   <- BlockFeST(snps, GROUP = snps$FUNC)
 
-#load("BlockFeST.RD")
+Block_P <- as.numeric(read.table("Block_P.txt")[[1]])
+
+auc_BlockFeST <- auc(pred~Block_P)
+auc_BlockFeST
+
+pr_BlockFeST  <- pr.curve(scores.class0 = Block_P[pred==1], scores.class1 =  Block_P[pred==0], curve = T)$auc.integral
+
+pr_BlockFeST
+
 
 #### KNN-based methods ################################
 # Get pairwise FST 
@@ -224,12 +232,12 @@ ldf_pr <- pr.curve(scores.class0 = ldf_scores[pred==1], scores.class1 =  ldf_sco
 RES_AUC        <- c(simplifiedlof_auc,lof_auc,knn_auc,loop_auc,inflo_auc,odin_auc,knnw_auc,ldf_auc, auc_FST, auc_PCADAPT, auc_FLK, auc_BlockFeST)
 names(RES_AUC) <- c("simplifiedlof","lof","knn","loop","inflo","odin","knnw","ldf","FST","PCADAPT","FLK","BlockFeST")
 
-#barplot(RES_AUC, las=2, main="AUC")
+barplot(RES_AUC, las=2, main="AUC")
 
 RES_PR        <- c(simplifiedlof_pr,lof_pr,knn_pr,loop_pr,inflo_pr,odin_pr,knnw_pr,ldf_pr, pr_FST, pr_PCADAPT, pr_FLK, pr_BlockFeST)
 names(RES_PR) <- c("simplifiedlof","lof","knn","loop","inflo","odin","knnw","ldf","FST","PCADAPT","FLK","BlockFeST")
 
-#barplot(RES_PR, las=2, main="PR-AUC")
+barplot(RES_PR, las=2, main="PR-AUC")
 
 
 write.table(RES_AUC, file="AUC.txt")
