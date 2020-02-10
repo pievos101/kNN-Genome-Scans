@@ -139,17 +139,23 @@ lines(odin, col="purple", type="b", pch=6)
 lines(knnw, col="yellow", type="b", pch=7)
 lines(simplifiedlof, col="dark green", type="b", pch=8)
 lines(ldf, col="red", type="b", pch=9)
-abline(h=auc_FST)
-abline(h=auc_PCADAPT)
-abline(h=auc_FLK)
+abline(h=auc_FST, lty=1)
+abline(h=auc_PCADAPT, lty=2)
+abline(h=auc_FLK, lty=3)
 #abline(h=auc_BlockFeST)
 breaks <- c(1,10,20,30,40,50,60,70,80,90,99)
 axis(1,breaks,as.character(breaks*10))
 #legend
+#legend
 legend("bottomleft",c("lof","knn","loop","inflo","odin","knnw","simplifiedlof","ldf"),
 pch = c(1,2,3,5,6,7,8,9), 
 col=c("black","grey","green","orange","purple","yellow","dark green","red"), 
-lwd=c(1,1,1,1,1,1,1,1))
+lwd=c(1,1,1,1,1,1,1,1), lty=rep(1,8), bty = "n")
+
+legend("bottomright",c("FST","pcadapt","FLK"),
+pch = c(NA,NA,NA), 
+col=c(rep("black",3)), 
+lwd=c(1,1,1), lty=c(1,2,3), bty = "n")
 
 
 ## Calculate the AUCs for kNN
