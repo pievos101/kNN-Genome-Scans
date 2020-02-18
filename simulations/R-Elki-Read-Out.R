@@ -142,8 +142,11 @@ ROCvalues <- rep(NaN,length(k))
 count <- 1
 for (xx in k){
 
-#tt <- as.character(read.table(paste(folder,"/Elki_k",xx,"/cluster.txt",sep=""))[,5])  
-tt <- as.character(read.table(paste(folder,"/Elki_k",xx,"/cluster.txt",sep=""))[,5])  
+kNN_DATA <- read.table(paste(folder,"/Elki_k",xx,"/cluster.txt",sep=""))
+col_id   <- dim(kNN_DATA)[2]
+
+tt       <- as.character(kNN_DATA[,col_id])  
+
 #5#3#8
 #print(tt)
 tt <- strsplit(tt,'=')

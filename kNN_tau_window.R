@@ -40,14 +40,17 @@ kNN_tau_window <- function(folder){
 
 readElki <- function(folder){
 
-tt <- as.character(read.table(paste(folder,"/cluster.txt",sep=""))[,5]) #5#3
-tt <- strsplit(tt,'=')
-tt <- sapply(tt,function(x){return(x[2])})
-tt <- as.numeric(tt)
+kNN_DATA <- read.table(paste(folder,"/cluster.txt",sep=""))
+col_id   <- dim(kNN_DATA)[2]
+
+tt       <- as.character(kNN_DATA[,col_id])  
+tt       <- strsplit(tt,'=')
+tt       <- sapply(tt,function(x){return(x[2])})
+tt       <- as.numeric(tt)
 # check if Nas or Infs are present
-ids_na  <- which(is.na(tt))
-ids_inf <- which(!is.finite(tt))
-repl    <- unique(c(ids_na,ids_inf))  
+ids_na   <- which(is.na(tt))
+ids_inf  <- which(!is.finite(tt))
+repl     <- unique(c(ids_na,ids_inf))  
 if(length(repl)>0){tt[repl] <- 0}
 #
 return(tt)

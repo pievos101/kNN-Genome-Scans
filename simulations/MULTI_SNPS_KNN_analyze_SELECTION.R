@@ -48,7 +48,9 @@ filename <- read.pcadapt("LFMM-sel", type = "lfmm")
 res <- pcadapt(filename, K=2, ploidy=1, min.maf = 0)
 #create groups
 GROUP <- sort(rep(1:1000,50))
-#GROUP <- getBayes(data, snps=TRUE)$FUNC
+#GROUP <- getBayes(data, snps=TRUE)$FUNC # for -t
+
+#P <- tapply(res$pvalue,GROUP,function(x){mean(x[is.finite(x)])})
 P <- tapply(res$pvalue,GROUP,function(x){val<-log(x);sum(val[is.finite(val)])})
 
 P <- as.numeric(P)
@@ -66,9 +68,11 @@ pr_PCADAPT
 # call hapflk
 # ./hapflk --file /home/bastian/kNN-project/REVISIONS/SINGLE-SNP_SIM/SNPS-0-7/FLK -K 1
 # read hapflk results 
+#FLKx <- read.table("hapflk.flk",stringsAsFactors=FALSE)[,5] for -t
 FLKx <- read.table("hapflk.flk",stringsAsFactors=FALSE)[,6]
 FLK <- as.numeric(FLKx)
 FLK <- FLK[-1]
+#FLK <- tapply(FLK,GROUP,function(x){mean(x[is.finite(x)])}) for -t
 FLK <- tapply(FLK,GROUP,function(x){val<-log(x);sum(val[is.finite(val)])})
 auc_FLK <- auc(pred~FLK);auc_FLK
 
