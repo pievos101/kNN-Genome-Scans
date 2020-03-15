@@ -1,8 +1,8 @@
 library(PopGenome)
 library(readxl)
-source("kNNCallElkiALL.R")
-source("kNN_tau_window.R")
-source("kNN_calc_best_k.R")
+source("~/GitHub/kNN-Genome-Scans/kNNCallElkiALL.R")
+source("~/GitHub/kNN-Genome-Scans/kNN_tau_window.R")
+source("~/GitHub/kNN-Genome-Scans/kNN_calc_best_k.R")
 
 # define the samples 
 samples <- as.data.frame(read_xlsx("20130606_sample_info.xlsx"))
@@ -74,6 +74,7 @@ points(tau_ldf, col="red", xaxt="n", pch=19, type="b")
 	legend("bottomleft",c("lof","knn","loop","inflo","odin","knnw","simplifiedlof","ldf"),
 	fill=c("black","grey","green","orange","purple","yellow","dark green","red"))
 axis(1,1:length(tau_knn),names(tau_knn), las=2)
+abline(h=0.90, col="red")
 
 # calculate the best k
 k_lof   <- kNN_calc_best_k(tau_lof)
